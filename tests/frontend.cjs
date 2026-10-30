@@ -111,3 +111,12 @@ assert.equal(run("travelLabel({tanggal:'31 Oktober s/d 2 November 2026'})"),'31 
 assert.equal(run("travelLabel({tanggal:'31 Februari 2026'})"),'31 Februari 2026');
 assert.equal(run("travelLabel({tanggal:'22 s/d 21 Oktober 2026'})"),'22 s/d 21 Oktober 2026');
 console.log('PASS: legacy shared month/year, aliases, ISO ranges, missing end metadata and invalid dates');
+for(const [text,expected] of [
+ ['21 s/d22 Mei2026','21 s/d 22 Mei 2026 (2 hari)'],
+ ['6 s/d7 Mei 2026','6 s/d 7 Mei 2026 (2 hari)'],
+ ['6 s/d 7 Mei 2026','6 s/d 7 Mei 2026 (2 hari)'],
+ ['21s/d22Mei2026','21 s/d 22 Mei 2026 (2 hari)']
+]){
+ context.text=text;assert.equal(run('travelLabel({tanggal:text})'),expected);
+}
+console.log('PASS: exact legacy screenshot formats with missing spaces');
