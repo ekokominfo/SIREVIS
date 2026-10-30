@@ -46,9 +46,8 @@ Tombol Hapus menghapus satu baris pegawai, bukan seluruh kelompok. Bila pegawai 
 
 ## Atasan
 
-Pilih bidang atau Semua Bidang untuk melihat rekap. Tombol Detail tersedia pada setiap baris tabel. Popup menampilkan seluruh pegawai dalam SPPD tersebut, jumlah peserta, total biaya, serta rincian perjalanan dan verifikasi masing-masing peserta. Form Ubah status SPPD di dalam popup memperbarui seluruh kelompok SPPD terkait. Pilihan status: Draf, Diajukan, Diverifikasi, atau Dikembalikan. Pemeriksa diisi manual dan wajib; Dikembalikan juga mewajibkan catatan.
+Pilih bidang atau Semua Bidang untuk melihat rekap. Tombol Detail tersedia pada setiap baris tabel. Popup menampilkan seluruh pegawai dalam SPPD tersebut, jumlah peserta, total biaya, serta rincian perjalanan dan verifikasi masing-masing peserta. Data yang ditampilkan merupakan hasil verifikasi; popup hanya menampilkan informasi tanpa form perubahan status.
 
-Pilihan status belum menerapkan pembatasan urutan transisi. Diverifikasi mengisi tanggal verifikasi; status lainnya mengosongkannya menjadi `-`.
 
 ## Arti perhitungan
 
@@ -76,4 +75,6 @@ Uji lokal tambahan untuk urutan, nomor, dan filter: `node tests/frontend.cjs`.
 
 Nama Aptika dikenali sebagai Aplikasi Informatika (APT), dan Standi sebagai Statistik dan Persandian (SPD). Titik/spasi pemisah sebelum kode bidang dihilangkan pada tampilan, misalnya 17.PIP menjadi 17PIP. Pencarian menyorot kecocokan teks pada tabel rincian tanpa membedakan huruf besar/kecil.
 
-Popup Detail mengambil seluruh peserta dari bidang dan ID SPPD yang sama, bukan hanya peserta yang lolos filter/pencarian atau halaman aktif. Jumlah peserta tidak digabung hanya berdasarkan nomor tampilan. Staf tetap dapat membuka Detail serta menghapus baris pegawai melalui tombol Hapus; pengubahan status di popup tersedia untuk Atasan.
+Popup Detail mengambil seluruh peserta dari bidang dan ID SPPD yang sama, bukan hanya peserta yang lolos filter/pencarian atau halaman aktif. Jumlah peserta tidak digabung hanya berdasarkan nomor tampilan. Staf tetap dapat membuka Detail serta menghapus baris pegawai melalui tombol Hapus. Form pengubahan status telah dihapus dari popup.
+
+Ringkasan popup memakai label Total Anggaran Keluar. Kartu Total SPPD memakai garis toska pada seluruh sisi dengan angka tetap putih. Tombol Hapus memakai latar merah dan tulisan putih, dengan jarak dari Detail dan keterangan bahwa hanya baris pegawai terkait yang dihapus.
