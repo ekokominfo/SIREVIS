@@ -1,0 +1,13 @@
+const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
+let data=[[],[],[],[],[1,'Ani','Dalam Daerah',100,'1 Januari 2026','A','K',''],['','Budi','Dalam Daerah',200,'1 Januari 2026','A','K','']];
+const sheet={getLastRow:()=>data.length,getMaxColumns:()=>16,getRange:(row,col,n=1,w=1)=>({getValues:()=>Array.from({length:n},(_,i)=>Array.from({length:w},(_,j)=>data[row+i-1]?.[col+j-1]??'')),setValues:values=>values.forEach((v,i)=>v.forEach((x,j)=>{(data[row+i-1]??=[])[col+j-1]=x;})),setValue:v=>{(data[row-1]??=[])[col-1]=v;}}),deleteRow:r=>data.splice(r-1,1)};
+const context={console,SpreadsheetApp:{getActiveSpreadsheet:()=>({getSheetByName:()=>sheet,getSheets:()=>[{getName:()=> 'Bidang'}]})},LockService:{getDocumentLock:()=>({waitLock(){},releaseLock(){}})},Utilities:{getUuid:()=>crypto.randomUUID(),formatDate:()=> '2026-01-01'},Session:{getScriptTimeZone:()=> 'Asia/Jakarta'}};
+vm.createContext(context);vm.runInContext(fs.readFileSync(__dirname+'/../Code.gs','utf8'),context);
+let rows=context.getSheetData('Bidang').rawRows;assert.equal(context.summary_(rows).totalSppd,1);assert.equal(context.summary_(rows).totalAnggaran,300);
+context.hapusDataSppd('Bidang',rows[0].recordId);rows=context.getSheetData('Bidang').rawRows;assert.equal(rows[0].no,'1');assert.equal(rows[0].nama,'Budi');const stable=rows[0].recordId;
+context.simpanDataSppd('Bidang',[{namaPegawai:'Cici',jenisPerjalanan:'Luar Daerah',biaya:500,tanggalMulai:'2026-01-31',tanggalSelesai:'2026-02-02',tanggalHari:'31 Januari 2026 s/d 2 Februari 2026',tujuan:'B',keterangan:'K',status:'Diajukan'}]);
+rows=context.getSheetData('Bidang').rawRows;assert.equal(rows[0].recordId,stable);assert.equal(context.summary_(rows).totalSppd,2);assert.equal(rows[1].tanggalSelesai,'2026-02-02');
+context.ubahStatusSppd('Bidang',rows[1].sppdId,'Diverifikasi','Pemeriksa','Sesuai');assert.equal(context.getSheetData('Bidang').rawRows[1].status,'Diverifikasi');
+assert.throws(()=>context.simpanDataSppd('Bidang',[{namaPegawai:'X',biaya:-1}]));
+const html=fs.readFileSync(__dirname+'/../Index.html','utf8');for(const m of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))new vm.Script(m[1]);
+console.log('PASS: legacy group totals, parent deletion, stable IDs, save, cross-month dates, verification, validation, JS syntax');
