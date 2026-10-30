@@ -63,3 +63,13 @@ Pilihan status belum menerapkan pembatasan urutan transisi. Diverifikasi mengisi
 - Lima SPPD terbaru diurutkan menurut tanggal mulai kegiatan, bukan waktu input; bila tanggal sama, nomor baris menjadi pembanding tambahan.
 
 Data tanggal lama dikenali bila berupa tanggal ISO/Date atau teks dengan nama bulan Indonesia, hari, dan tahun. Format lain perlu dirapikan agar filter dan urutan tanggal akurat.
+
+## Tampilan rincian data
+
+Judul dashboard, deskripsi, dan pilihan bidang berada dalam header. Filter bulan, tahun, dan pencarian berada di Rincian Data SPPD dan tetap memperbarui rekap dashboard. Urutan awal rincian mengikuti tanggal mulai kegiatan terbaru lintas bidang; Reset filter juga mengembalikan urutan ini. Tombol pengurutan kolom tetap tersedia.
+
+Kolom No menunjukkan nomor urut baris hasil filter, berlanjut pada halaman berikutnya. No SPPD menambahkan kode bidang pada nomor asli: KEP (Kepegawaian), KEU (Keuangan), LKP (Layanan Komunikasi Publik), PIP (Pengelola Informasi Publik), APT (Aplikasi Informatika), SPD (Statistik dan Persandian). Contoh: 1LKP, 4KEU, 2APT. Nama bidang lain tetap memakai nomor asli.
+
+Kata Register dihilangkan pada label tampilan. Nama sheet, nomor dalam spreadsheet, dan ID internal tetap digunakan seperti sebelumnya.
+
+Uji lokal tambahan untuk urutan, nomor, dan filter: `node tests/frontend.cjs`.
