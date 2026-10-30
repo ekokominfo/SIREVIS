@@ -5,7 +5,7 @@ const context={console,SpreadsheetApp:{getActiveSpreadsheet:()=>({getSheetByName
 vm.createContext(context);vm.runInContext(fs.readFileSync(__dirname+'/../Code.gs','utf8'),context);
 let rows=context.getSheetData('Bidang').rawRows;assert.equal(context.summary_(rows).totalSppd,1);assert.equal(context.summary_(rows).totalAnggaran,300);
 context.hapusDataSppd('Bidang',rows[0].recordId);rows=context.getSheetData('Bidang').rawRows;assert.equal(rows[0].no,'1');assert.equal(rows[0].nama,'Budi');const stable=rows[0].recordId;
-context.simpanDataSppd('Bidang',[{namaPegawai:'Cici',jenisPerjalanan:'Luar Daerah',biaya:500,tanggalMulai:'2026-01-31',tanggalSelesai:'2026-02-02',tanggalHari:'31 Januari 2026 s/d 2 Februari 2026',tujuan:'B',keterangan:'K',status:'Diajukan'}]);
+context.simpanDataSppd('Bidang',[{namaPegawai:'Cici',jenisPerjalanan:'Luar Daerah',biaya:500,tanggalMulai:'2026-01-31',tanggalSelesai:'2026-02-02',tanggalHari:'31 Januari 2026 s/d 2 Februari 2026',tujuan:'B',keterangan:'K',status:'Diajukan'}],'2026-02-03');
 rows=context.getSheetData('Bidang').rawRows;assert.equal(rows[0].recordId,stable);assert.equal(context.summary_(rows).totalSppd,2);assert.equal(rows[1].tanggalSelesai,'2026-02-02');
 context.ubahStatusSppd('Bidang',rows[1].sppdId,'Diverifikasi','Pemeriksa','Sesuai');assert.equal(context.getSheetData('Bidang').rawRows[1].status,'Diverifikasi');
 assert.throws(()=>context.simpanDataSppd('Bidang',[{namaPegawai:'X',biaya:-1}]));
@@ -20,3 +20,18 @@ const originalRecordId=data[4][9];data[4][9]=new Date('2026-05-07T00:00:00Z');
 assert.equal(JSON.parse(context.getSheetDataJson('Bidang')).rawRows[0].recordId,'2026-05-07T00:00:00.000Z');
 data[4][9]=originalRecordId;
 console.log('PASS: JSON transport preserves rows and serializes nested Sheets dates');
+const primary={namaPegawai:'Utama',biaya:100,jenisPerjalanan:'Dalam Daerah',tanggalMulai:'2026-05-20',tanggalSelesai:'2026-05-22',tanggalHari:'20 Mei 2026 s/d 22 Mei 2026',tujuan:'Palangka Raya',keterangan:'Rapat'};
+const countBefore=data.length;
+assert.throws(()=>context.simpanDataSppd('Bidang',[primary],''),/Tanggal verifikasi/);
+assert.equal(data.length,countBefore);
+context.simpanDataSppd('Bidang',[primary,{namaPegawai:'Pengikut',biaya:200}],'2026-05-25');
+const added=context.getSheetData('Bidang').rawRows.slice(-2);
+assert.equal(added[0].sppdId,added[1].sppdId);
+assert.notEqual(added[0].recordId,added[1].recordId);
+for(const row of added){
+ assert.equal(row.status,'Diverifikasi');assert.equal(row.verifikasi,'2026-05-25');
+ assert.equal(row.jenis,'Dalam Daerah');assert.equal(row.tanggalMulai,'2026-05-20');assert.equal(row.tanggalSelesai,'2026-05-22');
+ assert.equal(row.tujuan,'Palangka Raya');assert.equal(row.keterangan,'Rapat');
+}
+assert.equal(added[1].nama,'Pengikut');assert.equal(added[1].biaya,200);
+console.log('PASS: verified date required, verified status automatic, follower inherits trip while retaining name and cost');

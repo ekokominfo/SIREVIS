@@ -27,12 +27,11 @@ HTML mengambil Bootstrap, Chart.js, dan font melalui `cdn.jsdelivr.net` serta `f
 - Filter bulan/tahun, pencarian, urutan nama/biaya/tanggal, dan pagination berfungsi.
 - KPI, grafik, peringkat, dan data terbaru mengikuti hasil filter.
 - Staf hanya melihat dashboard bidang yang dikembalikan login pada antarmuka.
-- Tambah SPPD dengan dua pegawai; keduanya memiliki ID SPPD yang sama dan ID baris berbeda.
+- Tambah SPPD dengan tanggal verifikasi dan dua pegawai (nama/biaya berbeda); keduanya memiliki ID SPPD yang sama, ID baris berbeda, data perjalanan yang sama, serta status Diverifikasi. Tanggal verifikasi kosong harus ditolak.
 - Coba rentang tanggal lintas bulan/tahun; label dan metadata sesuai.
 - Biaya negatif dan tanggal selesai sebelum mulai ditolak.
 - Hapus pegawai pertama; pegawai berikutnya tetap memiliki nomor dan kelompok SPPD.
-- Atasan mengubah status melalui tombol Status di tabel; perubahan berlaku pada semua pegawai satu SPPD.
-- Dikembalikan memerlukan catatan; pemeriksa dan waktu tercatat.
+- Popup Detail menampilkan semua peserta dan tanggal verifikasi rata tengah, tanpa form perubahan status. Nomor pada judul disorot.
 - Gangguan server menampilkan pesan dan tombol Simpan dapat dipakai lagi.
 
 Checklist ini adalah langkah uji manual yang perlu dilakukan pada deployment asli, bukan klaim sudah lulus di Google.

@@ -40,7 +40,7 @@ Data lama tanpa ID dibaca sebagai kelompok berdasarkan nomor pada kolom A. ID la
 
 ## Staf
 
-Login menggunakan akun dalam Pengguna. Tekan Tambah SPPD, isi pegawai dan gunakan Pegawai Pengikut untuk menambahkan peserta dalam kelompok yang sama. Tanggal mulai wajib, tanggal selesai opsional. Status awal yang tersedia adalah Draf atau Diajukan.
+Login menggunakan akun dalam Pengguna. Tekan Tambah SPPD, isi data perjalanan bersama dan tanggal diverifikasi, lalu nama serta biaya setiap pegawai. Gunakan Pegawai Pengikut untuk menambahkan peserta; cukup isi nama dan biaya. Jenis perjalanan, tanggal kegiatan, tujuan, keterangan, dan tanggal verifikasi mengikuti data bersama. Tanggal mulai dan tanggal verifikasi wajib, tanggal selesai opsional. Semua data baru otomatis berstatus Diverifikasi.
 
 Tombol Hapus menghapus satu baris pegawai, bukan seluruh kelompok. Bila pegawai pertama dihapus, nomor diteruskan ke pegawai berikutnya. Penghapusan bersifat permanen pada spreadsheet; fitur arsip belum dibuat.
 
@@ -78,3 +78,5 @@ Nama Aptika dikenali sebagai Aplikasi Informatika (APT), dan Standi sebagai Stat
 Popup Detail mengambil seluruh peserta dari bidang dan ID SPPD yang sama, bukan hanya peserta yang lolos filter/pencarian atau halaman aktif. Jumlah peserta tidak digabung hanya berdasarkan nomor tampilan. Staf tetap dapat membuka Detail serta menghapus baris pegawai melalui tombol Hapus. Form pengubahan status telah dihapus dari popup.
 
 Ringkasan popup memakai label Total Anggaran Keluar. Kartu Total SPPD memakai garis toska pada seluruh sisi dengan angka tetap putih. Tombol Hapus memakai latar merah dan tulisan putih, dengan jarak dari Detail dan keterangan bahwa hanya baris pegawai terkait yang dihapus.
+
+Kolom Tanggal verifikasi pada tabel rincian dan popup diratakan ke tengah. Tabel rincian tidak lagi menampilkan pengurutan Biaya. Judul popup memakai format Detail SPPD : 9APT dengan nomor SPPD disorot.

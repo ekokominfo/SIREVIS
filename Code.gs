@@ -90,12 +90,15 @@ function withSheetLock_(name, action){
     return action(sheet);
   } finally {lock.releaseLock();}
 }
-function simpanDataSppd(name, rows){
+function simpanDataSppd(name, rows, tanggalVerifikasi){
+  if(!Array.isArray(rows)||!rows.length)throw new Error('Data kosong.');
+  if(!dateKey_(tanggalVerifikasi))throw new Error('Tanggal verifikasi wajib diisi.');
+  var trip=rows[0];
+  if(!dateKey_(trip.tanggalMulai)||!['Dalam Daerah','Luar Daerah'].includes(trip.jenisPerjalanan)||trip.tanggalSelesai&&(!dateKey_(trip.tanggalSelesai)||trip.tanggalSelesai<trip.tanggalMulai))throw new Error('Jenis atau rentang tanggal tidak valid.');
+  rows.forEach(function(r){if(!String(r.namaPegawai||'').trim()||!Number.isFinite(r.biaya)||r.biaya<0)throw new Error('Nama dan biaya nonnegatif wajib diisi.');});
   return withSheetLock_(name,function(sheet){
-    if(!Array.isArray(rows)||!rows.length)throw new Error('Data kosong.');
-    rows.forEach(function(r){if(!String(r.namaPegawai||'').trim()||!dateKey_(r.tanggalMulai)||!Number.isFinite(r.biaya)||r.biaya<0||!['Dalam Daerah','Luar Daerah'].includes(r.jenisPerjalanan)||r.tanggalSelesai && (!dateKey_(r.tanggalSelesai)||r.tanggalSelesai<r.tanggalMulai)||!['Draf','Diajukan'].includes(r.status))throw new Error('Nama, biaya, jenis, tanggal atau status tidak valid.');});
     var old=readRows_(name), next=old.reduce(function(n,r){return Math.max(n,parseInt(r.sppdNo)||0);},0)+1,id=Utilities.getUuid();
-    var values=rows.map(function(r,i){return [i===0?next:'',r.namaPegawai,r.jenisPerjalanan,r.biaya,r.tanggalHari,r.tujuan,r.keterangan,'-',id,Utilities.getUuid(),r.tanggalMulai,r.tanggalSelesai||'',r.status,'','',''];});
+    var values=rows.map(function(r,i){return [i===0?next:'',String(r.namaPegawai).trim(),trip.jenisPerjalanan,r.biaya,trip.tanggalHari,trip.tujuan,trip.keterangan,tanggalVerifikasi,id,Utilities.getUuid(),trip.tanggalMulai,trip.tanggalSelesai||'','Diverifikasi','','',''];});
     sheet.getRange(Math.max(5,sheet.getLastRow()+1),1,values.length,16).setValues(values);return 'Sukses';
   });
 }
