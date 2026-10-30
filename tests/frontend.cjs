@@ -48,3 +48,25 @@ document.getElementById('searchInput').value = 'Tidak ditemukan';
 run('applyFilters();');
 assert.match(document.getElementById('tableBody').innerHTML, /colspan="11"/);
 console.log('PASS: six field codes, labels, mixed-field date order, pagination numbers, search, month filter, empty table');
+for (const name of ['Aptika','Aplikasi Informatika']) {
+  context.name=name;assert.equal(run("sppdLabel({sppdNo:'2.',bidangAsal:name})"),'2APT');
+}
+for (const name of ['Standi','Statistik dan Persandian']) {
+  context.name=name;assert.equal(run("sppdLabel({sppdNo:'4',bidangAsal:name})"),'4SPD');
+}
+assert.equal(run("sppdLabel({sppdNo:'17.PIP',bidangAsal:'PIP'})"),'17PIP');
+assert.equal(run("sppdLabel({sppdNo:'17. pip',bidangAsal:'PIP'})"),'17PIP');
+run(`state.rows=[
+ {sppdId:'group',recordId:'a',bidangAsal:'PIP',nama:'Ani',rowIndex:5},
+ {sppdId:'group',recordId:'b',bidangAsal:'PIP',nama:'Budi',rowIndex:6},
+ {sppdId:'group',recordId:'c',bidangAsal:'APT',nama:'Lain',rowIndex:5},
+ {sppdId:'other',recordId:'d',bidangAsal:'PIP',nama:'Lain',rowIndex:7}
+];state.filtered=[state.rows[0]];`);
+assert.equal(run('sppdMembers(state.rows[0]).map(r=>r.nama).join()'),'Ani,Budi');
+document.getElementById('searchInput').value='an';
+assert.equal(run("highlight('Anita dan Ani')"),'<mark class="search-match">An</mark>ita d<mark class="search-match">an</mark> <mark class="search-match">An</mark>i');
+document.getElementById('searchInput').value='<img>';
+assert.equal(run("highlight('<img>')"),'<mark class="search-match">&lt;img&gt;</mark>');
+document.getElementById('searchInput').value='[';
+assert.equal(run("highlight('[a]')"),'<mark class="search-match">[</mark>a]');
+console.log('PASS: aliases, clean SPPD numbers, complete participant groups, safe literal search highlights');

@@ -1,7 +1,7 @@
 function doGet() {
   return HtmlService.createTemplateFromFile('Index')
       .evaluate()
-      .setTitle('SIREVIS v2.0 - Diskominfostandi')
+      .setTitle('SIREVIS - Diskominfostandi')
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
