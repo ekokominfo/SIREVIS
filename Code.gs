@@ -2,6 +2,7 @@ function doGet() {
   return HtmlService.createTemplateFromFile('Index')
       .evaluate()
       .setTitle('SIREVIS - Diskominfostandi')
+      .setFaviconUrl('https://raw.githubusercontent.com/ekokominfo/SIREVIS/main/assets/sirevis-logo.png')
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
