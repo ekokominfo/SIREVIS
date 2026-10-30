@@ -101,3 +101,13 @@ for(const [start,end,expected] of [
 assert.equal(run("travelLabel({tanggal:'21 Oktober 2026 s/d 22 Oktober 2026'})"),'21 s/d 22 Oktober 2026 (2 hari)');
 assert.equal(run("travelLabel({tanggal:'Tanggal belum diketahui'})"),'Tanggal belum diketahui');
 console.log('PASS: compact date ranges, inclusive duration, month/year boundaries, leap year and legacy date labels');
+for(const text of ['21 s/d 22 Oktober 2026','21-22 Oktober 2026','21 s.d. 22 Oktober 2026','21 sampai 22 Oktober 2026','21 Okt 2026 s/d 22 Okt 2026','2026-10-21 s/d 2026-10-22']){
+ context.text=text;
+ assert.equal(run('travelLabel({tanggal:text})'),'21 s/d 22 Oktober 2026 (2 hari)');
+ assert.equal(run('dateKey({tanggal:text})'),'2026-10-21');
+}
+assert.equal(run("travelLabel({tanggalMulai:'2026-10-21',tanggal:'21 s/d 22 Oktober 2026'})"),'21 s/d 22 Oktober 2026 (2 hari)');
+assert.equal(run("travelLabel({tanggal:'31 Oktober s/d 2 November 2026'})"),'31 Oktober s/d 2 November 2026 (3 hari)');
+assert.equal(run("travelLabel({tanggal:'31 Februari 2026'})"),'31 Februari 2026');
+assert.equal(run("travelLabel({tanggal:'22 s/d 21 Oktober 2026'})"),'22 s/d 21 Oktober 2026');
+console.log('PASS: legacy shared month/year, aliases, ISO ranges, missing end metadata and invalid dates');
