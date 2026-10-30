@@ -78,6 +78,9 @@ function summary_(rows) {
 function response_(rows){return {rawRows:rows,summary:summary_(rows),recentSppd:[]};}
 function getSheetData(name){if(name==='Pengguna')throw new Error('Sheet bukan data SPPD.');return response_(readRows_(name));}
 function getAllSheetsData(){var rows=[];getSheetNames().forEach(function(n){rows=rows.concat(readRows_(n));});return response_(rows);}
+// Kirim teks JSON agar nilai tanggal dari Sheets aman melewati google.script.run.
+function getSheetDataJson(name){return JSON.stringify(getSheetData(name));}
+function getAllSheetsDataJson(){return JSON.stringify(getAllSheetsData());}
 function withSheetLock_(name, action){
   var lock=LockService.getDocumentLock() || LockService.getScriptLock();lock.waitLock(30000);
   try {var sheet=SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name);if(!sheet || name==='Pengguna')throw new Error('Bidang tidak valid.');

@@ -11,3 +11,12 @@ context.ubahStatusSppd('Bidang',rows[1].sppdId,'Diverifikasi','Pemeriksa','Sesua
 assert.throws(()=>context.simpanDataSppd('Bidang',[{namaPegawai:'X',biaya:-1}]));
 const html=fs.readFileSync(__dirname+'/../Index.html','utf8');for(const m of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))new vm.Script(m[1]);
 console.log('PASS: legacy group totals, parent deletion, stable IDs, save, cross-month dates, verification, validation, JS syntax');
+const jsonResponse=JSON.parse(context.getSheetDataJson('Bidang'));
+assert.deepEqual(jsonResponse,JSON.parse(JSON.stringify(context.getSheetData('Bidang'))));
+assert.equal(JSON.parse(context.getAllSheetsDataJson()).rawRows.length,rows.length);
+// A Date nested in an RPC response cannot cross the Apps Script bridge directly.
+// JSON transport must convert it before the success handler receives the payload.
+const originalRecordId=data[4][9];data[4][9]=new Date('2026-05-07T00:00:00Z');
+assert.equal(JSON.parse(context.getSheetDataJson('Bidang')).rawRows[0].recordId,'2026-05-07T00:00:00.000Z');
+data[4][9]=originalRecordId;
+console.log('PASS: JSON transport preserves rows and serializes nested Sheets dates');

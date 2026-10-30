@@ -70,3 +70,20 @@ assert.equal(run("highlight('<img>')"),'<mark class="search-match">&lt;img&gt;</
 document.getElementById('searchInput').value='[';
 assert.equal(run("highlight('[a]')"),'<mark class="search-match">[</mark>a]');
 console.log('PASS: aliases, clean SPPD numbers, complete participant groups, safe literal search highlights');
+context.Option=function(text,value){return {text,value};};
+document.getElementById('filterTahun').replaceChildren=function() {this.value='';};
+(async()=>{
+  run("rpc=async()=>null;state.user={role:'Staf',bidang:'PIP'};state.size=10;");
+  const before=run('state.rows');
+  await run('loadData({afterSave:true})');
+  assert.equal(run('state.rows'),before,'failed reload must retain existing data');
+  assert.match(document.getElementById('message').textContent,/sudah berhasil disimpan/);
+  assert.match(document.getElementById('message').textContent,/Jangan tambah ulang/);
+  assert.equal(document.getElementById('loader').hidden,true);
+  document.getElementById('searchInput').value='';document.getElementById('filterBulan').value='';
+  run(`rpc=async()=>JSON.stringify({rawRows:[{nama:'Baru',sppdNo:2,bidangAsal:'PIP',tanggalMulai:'2026-10-30'}]});`);
+  await run('loadData()');
+  assert.equal(run('state.rows[0].nama'),'Baru');
+  assert.match(document.getElementById('tableBody').innerHTML,/2PIP/);
+  console.log('PASS: null reload preserves data, distinguishes saved SPPD, and valid JSON refreshes table');
+})().catch(error=>{console.error(error);process.exitCode=1;});
