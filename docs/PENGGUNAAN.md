@@ -80,3 +80,5 @@ Popup Detail mengambil seluruh peserta dari bidang dan ID SPPD yang sama, bukan 
 Ringkasan popup memakai label Total Anggaran Keluar. Kartu Total SPPD memakai garis toska pada seluruh sisi dengan angka tetap putih. Tombol Hapus memakai latar merah dan tulisan putih, dengan jarak dari Detail dan keterangan bahwa hanya baris pegawai terkait yang dihapus.
 
 Kolom Tanggal verifikasi pada tabel rincian dan popup diratakan ke tengah. Tabel rincian tidak lagi menampilkan pengurutan Biaya. Judul popup memakai format Detail SPPD : 9APT dengan nomor SPPD disorot.
+
+Rentang tanggal pada tabel, daftar terbaru, dan popup ditulis ringkas dengan jumlah hari inklusif: 21 s/d 22 Oktober 2026 (2 hari). Lintas bulan: 31 Oktober s/d 2 November 2026 (3 hari). Lintas tahun tetap menampilkan kedua tahun. Kegiatan satu hari ditandai (1 hari). Label lama dengan rentang tanggal lengkap juga dirapikan saat ditampilkan. Panah bawaan input angka Biaya disembunyikan; batas biaya nonnegatif tetap berlaku. Judul dashboard Atasan menjadi Dashboard SIREVIS.

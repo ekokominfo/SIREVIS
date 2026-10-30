@@ -87,3 +87,17 @@ document.getElementById('filterTahun').replaceChildren=function() {this.value=''
   assert.match(document.getElementById('tableBody').innerHTML,/2PIP/);
   console.log('PASS: null reload preserves data, distinguishes saved SPPD, and valid JSON refreshes table');
 })().catch(error=>{console.error(error);process.exitCode=1;});
+for(const [start,end,expected] of [
+ ['2026-10-21','2026-10-22','21 s/d 22 Oktober 2026 (2 hari)'],
+ ['2026-10-21','','21 Oktober 2026 (1 hari)'],
+ ['2026-10-21','2026-10-21','21 Oktober 2026 (1 hari)'],
+ ['2026-10-31','2026-11-02','31 Oktober s/d 2 November 2026 (3 hari)'],
+ ['2026-12-31','2027-01-02','31 Desember 2026 s/d 2 Januari 2027 (3 hari)'],
+ ['2024-02-28','2024-03-01','28 Februari s/d 1 Maret 2024 (3 hari)']
+]){
+ context.start=start;context.end=end;
+ assert.equal(run('rangeLabel(start,end)'),expected);
+}
+assert.equal(run("travelLabel({tanggal:'21 Oktober 2026 s/d 22 Oktober 2026'})"),'21 s/d 22 Oktober 2026 (2 hari)');
+assert.equal(run("travelLabel({tanggal:'Tanggal belum diketahui'})"),'Tanggal belum diketahui');
+console.log('PASS: compact date ranges, inclusive duration, month/year boundaries, leap year and legacy date labels');
