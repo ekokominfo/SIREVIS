@@ -35,6 +35,16 @@ function dateKey_(v) {
   if (v instanceof Date) return Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd');
   return /^\d{4}-\d{2}-\d{2}$/.test(String(v || '')) ? String(v) : '';
 }
+// ID dari Sheets dapat berupa angka atau Date. Gunakan representasi teks
+// yang sama pada respons browser, migrasi, dan pencarian saat mutasi.
+function idText_(value) {
+  if(value===null||value===undefined||value==='')return '';
+  return Object.prototype.toString.call(value)==='[object Date]' ? value.toISOString() : String(value);
+}
+function persistedId_(value) {
+  var id=idText_(value);
+  return id.indexOf('legacy:')===0 ? 'migrated:'+id : id;
+}
 function money_(v) { return typeof v === 'number' ? v : Number(String(v || '').replace(/[^0-9,-]/g, '').replace(',', '.')) || 0; }
 function readRows_(name) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name);
@@ -44,10 +54,11 @@ function readRows_(name) {
   var active = '', number = '', result = [];
   values.forEach(function(r, i) {
     if (!r.some(function(v){return v !== '';})) return;
-    if (r[0] !== '') { active = r[8] || 'legacy:' + name + ':' + (i+5); number = String(r[0]); }
+    var groupId=idText_(r[8]), recordId=idText_(r[9]);
+    if (r[0] !== '') { active = groupId || 'legacy:' + name + ':' + (i+5); number = String(r[0]); }
     result.push({rowIndex:i+5, no:String(r[0] || ''), sppdNo:number,
-      sppdId:r[8] || active || 'legacy:' + name + ':' + (i+5),
-      recordId:r[9] || 'legacy:' + name + ':' + (i+5), nama:String(r[1] || ''),
+      sppdId:groupId || active || 'legacy:' + name + ':' + (i+5),
+      recordId:recordId || 'legacy:' + name + ':' + (i+5), nama:String(r[1] || ''),
       jenis:String(r[2] || ''), biaya:money_(r[3]), tanggal:r[4] instanceof Date ? Utilities.formatDate(r[4],Session.getScriptTimeZone(),'dd MMMM yyyy') : String(r[4] || '-'),
       tujuan:String(r[5] || ''), keterangan:String(r[6] || ''), verifikasi:r[7] instanceof Date ? dateKey_(r[7]) : String(r[7] || '-'),
       bidangAsal:name, tanggalMulai:dateKey_(r[10]) || dateKey_(r[4]), tanggalSelesai:dateKey_(r[11]),
@@ -86,7 +97,7 @@ function withSheetLock_(name, action){
   try {var sheet=SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name);if(!sheet || name==='Pengguna')throw new Error('Bidang tidak valid.');
     if(sheet.getMaxColumns()<16)sheet.insertColumnsAfter(sheet.getMaxColumns(),16-sheet.getMaxColumns());
     // Persist legacy identities before mutations so row deletion cannot change identity.
-    var rows=readRows_(name);rows.forEach(function(r){sheet.getRange(r.rowIndex,9,1,2).setValues([[r.sppdId.indexOf('legacy:')===0 ? 'migrated:'+r.sppdId : r.sppdId,r.recordId.indexOf('legacy:')===0 ? 'migrated:'+r.recordId : r.recordId]]);});
+    var rows=readRows_(name);rows.forEach(function(r){sheet.getRange(r.rowIndex,9,1,2).setValues([[persistedId_(r.sppdId),persistedId_(r.recordId)]]);});
     return action(sheet);
   } finally {lock.releaseLock();}
 }
@@ -103,7 +114,7 @@ function simpanDataSppd(name, rows, tanggalVerifikasi){
   });
 }
 function hapusDataSppd(name, id){return withSheetLock_(name,function(sheet){
-  var rows=readRows_(name), normalized=String(id).indexOf('legacy:')===0?'migrated:'+id:id;
+  var rows=readRows_(name), normalized=persistedId_(id);
   var r=rows.find(function(x){return x.recordId===normalized;});if(!r)throw new Error('Data sudah berubah. Muat ulang.');
   var rest=rows.filter(function(x){return x.sppdId===r.sppdId && x.recordId!==r.recordId;});
   if(r.no && rest.length)sheet.getRange(rest[0].rowIndex,1).setValue(r.no);
@@ -113,7 +124,7 @@ function ubahStatusSppd(name,id,status,pemeriksa,catatan){return withSheetLock_(
   if(!['Draf','Diajukan','Diverifikasi','Dikembalikan'].includes(status))throw new Error('Status tidak valid.');
   if(!String(pemeriksa||'').trim())throw new Error('Nama pemeriksa wajib diisi.');
   if(status==='Dikembalikan'&&!String(catatan||'').trim())throw new Error('Catatan pengembalian wajib diisi.');
-  var normalized=id.indexOf('legacy:')===0?'migrated:'+id:id;
+  var normalized=persistedId_(id);
   var rows=readRows_(name).filter(function(r){return r.sppdId===normalized;});if(!rows.length)throw new Error('SPPD tidak ditemukan.');
   rows.forEach(function(r){sheet.getRange(r.rowIndex,13,1,4).setValues([[status,pemeriksa,new Date(),catatan||'']]);sheet.getRange(r.rowIndex,8).setValue(status==='Diverifikasi'?new Date():'-');});return 'Sukses';
 });}

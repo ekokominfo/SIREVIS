@@ -35,3 +35,23 @@ for(const row of added){
 }
 assert.equal(added[1].nama,'Pengikut');assert.equal(added[1].biaya,200);
 console.log('PASS: verified date required, verified status automatic, follower inherits trip while retaining name and cost');
+// Reproduce deletion of old spreadsheet rows whose metadata is not text.
+const realData=data;
+for(const kind of ['number','date','zero']){
+ const group=kind==='number'?17:kind==='zero'?0:new Date('2026-05-01T00:00:00Z');
+ const firstId=kind==='number'?101:kind==='zero'?0:new Date('2026-05-02T00:00:00Z');
+ const nextId=kind==='number'?102:kind==='zero'?1:new Date('2026-05-03T00:00:00Z');
+ data=[[],[],[],[],[9,'Utama','Dalam Daerah',100,'20 Mei 2026','A','K','2026-05-25',group,firstId],['','Pengikut','Dalam Daerah',200,'20 Mei 2026','A','K','2026-05-25',group,nextId],[10,'Lain','Dalam Daerah',300,'20 Mei 2026','B','K','2026-05-25','other-group','other-record']];
+ const fromBrowser=JSON.parse(context.getSheetDataJson('Bidang')).rawRows;
+ assert.equal(typeof fromBrowser[0].sppdId,'string');assert.equal(typeof fromBrowser[0].recordId,'string');
+ assert.equal(fromBrowser[0].sppdId,fromBrowser[1].sppdId);
+ assert.equal(context.hapusDataSppd('Bidang',fromBrowser[0].recordId),'Sukses');
+ const remaining=JSON.parse(context.getSheetDataJson('Bidang')).rawRows;
+ assert.equal(remaining.length,2);assert.equal(remaining[0].nama,'Pengikut');assert.equal(remaining[0].no,'9');
+ assert.equal(remaining[0].sppdId,fromBrowser[1].sppdId);assert.equal(remaining[0].recordId,fromBrowser[1].recordId);
+ assert.equal(remaining[1].recordId,'other-record');assert.equal(remaining[1].sppdNo,'10');
+ assert.equal(context.hapusDataSppd('Bidang',remaining[0].recordId),'Sukses');
+ assert.equal(context.getSheetData('Bidang').rawRows[0].nama,'Lain');
+}
+data=realData;
+console.log('PASS: delete numeric, zero and Date IDs through JSON roundtrip; preserve follower number, identity and other SPPD');
