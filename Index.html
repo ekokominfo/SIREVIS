@@ -20,6 +20,14 @@ mark.search-match{background:#fde047;color:#172033;border-radius:3px;padding:0 2
 .verification-date{text-align:center;vertical-align:middle!important}.sppd-number{background:#fde047;color:#172033;padding:3px 8px;border-radius:6px;display:inline-block}
 input[name="biaya"]{-moz-appearance:textfield;appearance:textfield}
 input[name="biaya"]::-webkit-inner-spin-button,input[name="biaya"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.recent td:last-child,.detail-table td:nth-child(8){white-space:nowrap;overflow-wrap:normal;word-break:normal}
+@media(max-width:767px){
+  .recent tbody{display:block}
+  .recent tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;padding:12px 0;border-bottom:1px solid #ffffff15}
+  .recent td{display:block;padding:0;border:0;min-width:0}
+  .recent td:first-child{grid-column:1/-1}
+  .recent td:last-child{align-self:start}
+}
 </style>
 </head>
 <body>
