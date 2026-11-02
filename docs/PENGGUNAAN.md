@@ -84,3 +84,13 @@ Kolom Tanggal verifikasi pada tabel rincian dan popup diratakan ke tengah. Tabel
 Rentang tanggal pada tabel, daftar terbaru, dan popup ditulis ringkas dengan jumlah hari inklusif: 21 s/d 22 Oktober 2026 (2 hari). Lintas bulan: 31 Oktober s/d 2 November 2026 (3 hari). Lintas tahun tetap menampilkan kedua tahun. Kegiatan satu hari ditandai (1 hari). Label lama dengan rentang tanggal lengkap juga dirapikan saat ditampilkan. Panah bawaan input angka Biaya disembunyikan; batas biaya nonnegatif tetap berlaku. Judul dashboard Atasan menjadi Dashboard SIREVIS.
 
 Pembacaan tanggal lama mendukung bulan/tahun bersama (21 s/d 22 Oktober 2026), pemisah s.d., sampai, tanda hubung pada rentang hari, singkatan bulan Indonesia dan rentang ISO. Bila kolom tanggal selesai kosong, tanggal akhir dari label lama digunakan jika tanggal mulai cocok. Format tidak dikenali, kalender tidak valid, atau rentang terbalik tetap ditampilkan seperti aslinya tanpa mengarang jumlah hari.
+
+## Penyegaran tampilan
+
+Rincian Data SPPD ditempatkan setelah kartu ringkasan dan sebelum grafik. Desktop menampilkan tabel; HP menampilkan kartu pegawai dengan nomor SPPD, nama, bidang, tanggal/durasi, anggaran, tanggal verifikasi, tujuan, dan tombol Detail/Hapus sesuai role. Kartu dan tabel menggunakan hasil filter dan pagination yang sama. Pilihan pengurutan HP tersedia untuk tanggal dan nama.
+
+Filter memiliki label, jumlah baris/SPPD yang cocok, dan chip aktif yang bisa dihapus satu per satu. Hasil pencarian tetap disorot. Popup Detail menampilkan ringkasan bidang, tanggal, verifikasi, jenis perjalanan, jumlah peserta dan total anggaran, kemudian seluruh peserta SPPD; peserta ditampilkan sebagai kartu di HP.
+
+Form Tambah SPPD memisahkan Data perjalanan dan Daftar pegawai. Total Anggaran Keluar dan jumlah peserta diperbarui saat biaya diisi atau peserta ditambah/dihapus. Baris terakhir tidak dapat dihapus dari form.
+
+Uji browser tambahan: `node tests/ui.cjs` dengan Node.js 24, Playwright, Chromium, dan curl tersedia. Uji ini menggunakan Bootstrap/Chart.js asli dari CDN dan simulasi layanan Google, pada lebar 1440, 390, dan 320 piksel. Font Google diganti fallback saat tes. Screenshot disimpan di direktori sementara yang dicetak oleh runner. Pengujian ini tidak mengakses spreadsheet produksi atau membuktikan deployment Apps Script.
